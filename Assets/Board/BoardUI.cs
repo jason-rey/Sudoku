@@ -12,7 +12,7 @@ public class BoardUI : MonoBehaviour
     [SerializeField] private GameObject boardObj;
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private GameObject barPrefab;
-    [SerializeField] private Button[] boardElements;
+    public Button[,] boardElements;
 
     [SerializeField] private int cellSize;
     [SerializeField] private int cellMargin;
@@ -21,17 +21,18 @@ public class BoardUI : MonoBehaviour
 
     void Start() {
         playerBoard = boardLogic.playerBoard;
-        boardElements = new Button[playerBoard.board.Length * playerBoard.board[0].Length];
+        boardElements = new Button[playerBoard.board.Length, playerBoard.board[0].Length];
         PlaceCells();
         PlaceBars();
         this.transform.localPosition = new Vector3(-((cellSize + cellMargin) * 9) / 2, ((cellSize + cellMargin) * 9) / 2);
 
         // selected square here
-        for (int i = 0; i < boardElements.Length; i++) {
-            Button curr = boardElements[i];
-            curr.onClick.AddListener(() => { boardLogic.SetSelectedSquare(curr.gameObject); });
+        for (int i = 0; i < boardElements.GetLength(0); i++) {
+            for (int j = 0; j < boardElements.GetLength(1); j++) {
+                Button curr = boardElements[i, j];
+                curr.onClick.AddListener(() => { boardLogic.SetSelectedSquare(curr.gameObject); });
+            }
         }
-
     }
 
     private int squareSize = 3;
@@ -58,7 +59,7 @@ public class BoardUI : MonoBehaviour
                 cellText.text = numText;
                 cellText.fontSize = cellSize;
 
-                boardElements[idx] = cellButton;
+                boardElements[row, col] = cellButton;
                 idx += 1;
 
                 Vector3 pos = cellPos;
